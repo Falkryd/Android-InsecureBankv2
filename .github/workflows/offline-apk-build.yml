@@ -1,0 +1,40 @@
+name: Offline APK Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  assemble-debug:
+    name: Assemble Debug APK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: InsecureBankv2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Assemble debug APK
+        run: ./gradlew assembleDebug --no-daemon --console=plain
+
+      - name: Upload debug artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: insecurebankv2-debug-apk
+          path: InsecureBankv2/app/build/outputs/apk/debug/app-debug.apk
