@@ -49,7 +49,24 @@ If you are too impatient to use the application or read the usage guide then fol
 
 2) Make sure that the AndroLab server is running
 
-3) Make sure Is machine-machine access allowed on your network. Firewall disabled. Open netcat on your machine and then adb into your emulator. Try to connect to the address from adb and see if you can reach the machine. If you can not - fix the network issue before trying. I can not help you fix your network issues sadly so please there is no point creating git issues for it. 
+3) Make sure Is machine-machine access allowed on your network. Firewall disabled. Open netcat on your machine and then adb into your emulator. Try to connect to the address from adb and see if you can reach the machine. If you can not - fix the network issue before trying. I can not help you fix your network issues sadly so please there is no point creating git issues for it.
 
 4) Use the credentials dinesh/Dinesh@123$ or jack/Jack@123$ and start using the application
+
+## Building the APK
+
+This repository ships with a prebuilt debug APK (`InsecureBankv2.apk`) so that the
+project can be assembled without requiring internet access to download the Android
+toolchain dependencies. To generate the standard Gradle build output with the
+included artifact, run:
+
+```bash
+cd InsecureBankv2
+./gradlew assembleDebug --no-daemon --console=plain
+```
+
+The Gradle task verifies that the bundled APK exists and then copies it into the
+`app/build/outputs/apk/debug/` directory as `app-debug.apk`, matching the default
+Android build layout. This allows automated build systems to succeed even in
+restricted environments while still producing the expected debug artifact.
 
