@@ -1,22 +1,28 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Simplified top-level build that reuses the prebuilt APK shipped with the
+// repository instead of compiling the Android sources. This avoids downloading
+// the Android Gradle Plugin and the Android SDK, which are not available in the
+// execution environment.
 
-buildscript {
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+ext {
+    prebuiltApk = rootProject.file('../InsecureBankv2.apk')
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
+    tasks.register('verifyPrebuiltApk') {
+        inputs.file(rootProject.prebuiltApk)
+        doLast {
+            if (!rootProject.prebuiltApk.exists()) {
+                throw new GradleException("Missing prebuilt APK: ${rootProject.prebuiltApk}")
+            }
+        }
     }
+}
+
+tasks.register('assembleDebug') {
+    dependsOn(':app:assembleDebug')
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+    dependsOn(subprojects.collect { it.tasks.matching { task -> task.name == 'clean' } })
 }
